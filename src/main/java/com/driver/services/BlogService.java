@@ -21,13 +21,37 @@ public class BlogService {
     @Autowired
     UserRepository userRepository1;
 
+    @Autowired
+    ImageRepository imageRepository1;
+
     public Blog createAndReturnBlog(Integer userId, String title, String content) {
         //create a blog at the current time
+        User user = userRepository1.findById(userId).get();
+        List<Blog> blogList = user.getBlogList();
 
+        Blog blog = new Blog();
+        blog.setTitle(title);
+        blog.setContent(content);
+        blog.setPubDate(new Date());
+
+        blogList.add(blog);
+        user.setBlogList(blogList);
+
+        blogRepository1.save(blog);
+        userRepository1.save(user);
+
+        return blog;
     }
 
     public void deleteBlog(int blogId){
         //delete blog and corresponding images
+        Blog blog = blogRepository1.findById(blogId).get();
+        List<Image> imageList = blog.getImageList();
 
+        for(Image image : imageList){
+            imageRepository1.deleteById(image.getId());
+        }
+
+        blogRepository1.deleteById(blogId);
     }
 }
