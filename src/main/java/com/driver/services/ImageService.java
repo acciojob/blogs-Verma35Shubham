@@ -18,13 +18,12 @@ public class ImageService {
     public Image addImage(Integer blogId, String description, String dimensions){
         //add an image to the blog
         Blog blog = blogRepository2.findById(blogId).get();
-        List<Image> imageLists = blog.getImageList();
+
         Image image = new Image();
         image.setDescription(description);
         image.setDimensions(dimensions);
-
-        imageLists.add(image);
-        blog.setImageList(imageLists);
+        image.setBlog(blog);
+        blog.getImageList().add(image);
         blogRepository2.save(blog);
 
         return image;
@@ -36,14 +35,17 @@ public class ImageService {
 
     public int countImagesInScreen(Integer id, String screenDimensions) {
         //Find the number of images of given dimensions that can fit in a screen having `screenDimensions`
-        Blog blog = blogRepository2.findById(id).get();
-        List<Image> imageList = blog.getImageList();
-        int count = 0;
-        for(Image image : imageList){
-            if (image.getDimensions() == screenDimensions){
-                count++;
-            }
-        }
-        return count;
+        int indOfX = screenDimensions.indexOf('X');
+        int screenH = Integer.parseInt(screenDimensions.substring(0,indOfX));
+        int screenW = Integer.parseInt(screenDimensions.substring(indOfX+1));
+
+        Image image = imageRepository2.findById(id).get();
+
+        int indexOfinImage = image.getDimensions().indexOf('X');
+
+        int imageH = Integer.parseInt(image.getDimensions().substring(0, indexOfinImage));
+        int imageW = Integer.parseInt(image.getDimensions().substring((indexOfinImage+1)));
+
+        return (screenH/imageH)*(screenW/imageW);
     }
 }

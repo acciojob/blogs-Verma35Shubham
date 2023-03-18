@@ -14,7 +14,7 @@ public class Image {
 
     @ManyToOne
     @JoinColumn
-    Blog blog;
+    private Blog blog;
 
     public Image() {
     }

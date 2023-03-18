@@ -28,6 +28,13 @@ public class Blog {
     public Blog() {
     }
 
+    public Blog(int id, String title, String content, Date pubDate) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.pubDate = pubDate;
+    }
+
     public int getId() {
         return id;
     }
